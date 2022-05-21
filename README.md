@@ -11,25 +11,21 @@ IDEAS
 
 
 1. Gympay - Blockchain and Token
-Intial Supply 1,000,000
-Price per coin is $1 Aus
-Using this blockchain to pay for gym memberships and gym products (whey protein, supplements, etc)
-The more frequency of transactions, the higher your rewards. Proof of usage. (Discounts on products and membership)
-If statements to create reward system for usage
-Streamlit application for front end users
-Link to buying real world products
+- Intial Supply 1,000,000
+- Price per coin is $1 Aus
+- Using this blockchain to pay for gym memberships and gym products (whey protein, supplements, etc)
+- The more frequency of transactions, the higher your rewards. Proof of usage. (Discounts on products and membership)
+- If statements to create reward system for usage
+- Streamlit application for front end users
+- Link to buying real world products
 
 
 To do:
 
-Blockchain
-Token - Solidity Smart Contract
-Streamlit application frontend
-
-
-Step by step:
-Create blockchain using visual code
-Initial Supply
-Owner Address
+Create Blockchain
+Create Token - Using Solidity Smart Contract
+Create Streamlit application frontend
+Transact with wallet on blockchain
+Show storage of funds and front end interface with streamlit
 
 
