@@ -1,5 +1,7 @@
 # Gympay-Blockchain
 
+# ![image_add](Images/Gympay.png)
+
 ## Overview
 
 We are creating a private blockchain and token to be used for transcations between Gyms.
