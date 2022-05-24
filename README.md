@@ -6,7 +6,7 @@
 
 We are creating a private blockchain and token to be used for transcations between Gyms.
 
-We decided on this idea as we believe there is a market for reduced financial cost for gym users and higher which will enable higher profitability for Gym owners and more choice for gym users.
+We decided on this idea as we believe there is a market for reduced financial cost and more choice for gym users and higher profitability for Gym owners.
 
 ## To Do
 IDEAS
