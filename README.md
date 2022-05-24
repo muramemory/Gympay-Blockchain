@@ -24,10 +24,10 @@ IDEAS
 
 To do:
 
-Create Blockchain
-Create Token - Using Solidity Smart Contract
-Create Streamlit application frontend
-Transact with wallet on blockchain
-Show storage of funds and front end interface with streamlit
+- Create Blockchain
+- Create Token - Using Solidity Smart Contract
+- Create Streamlit application frontend
+- Transact with wallet on blockchain
+- Show storage of funds and front end interface with streamlit
 
 
