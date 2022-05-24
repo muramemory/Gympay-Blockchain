@@ -1,10 +1,12 @@
 # Gympay-Blockchain
 
+# ![image_add](Images/Gympay.png)
+
 ## Overview
 
 We are creating a private blockchain and token to be used for transcations between Gyms.
 
-We decided on this idea as we believe there is a market for reduced financial cost for gym users and higher which will enable higher profitability for Gym owners and more choice for gym users.
+We decided on this idea as we believe there is a market for reduced financial cost and more choice for gym users and higher profitability for Gym owners.
 
 ## To Do
 IDEAS
@@ -22,10 +24,10 @@ IDEAS
 
 To do:
 
-Create Blockchain
-Create Token - Using Solidity Smart Contract
-Create Streamlit application frontend
-Transact with wallet on blockchain
-Show storage of funds and front end interface with streamlit
+- Create Blockchain
+- Create Token - Using Solidity Smart Contract
+- Create Streamlit application frontend
+- Transact with wallet on blockchain
+- Show storage of funds and front end interface with streamlit
 
 
