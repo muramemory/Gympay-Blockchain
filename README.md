@@ -4,7 +4,7 @@
 
 ## Overview
 
-We are creating a private blockchain and token to be used for transcations between Gyms.
+We are creating a ERC20 token to be used for transcations between Gym owners and Gym users.
 
 We decided on this idea as we believe there is a market for reduced financial cost and more choice for gym users and higher profitability for Gym owners.
 
