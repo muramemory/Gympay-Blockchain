@@ -24,10 +24,8 @@ IDEAS
 
 To do:
 
-- Create Blockchain
-- Create Token - Using Solidity Smart Contract
-- Create Streamlit application frontend
-- Transact with wallet on blockchain
-- Show storage of funds and front end interface with streamlit
+- Create ERC20 Token Using Solidity Smart Contract
+- Create Streamlit application frontend showing wallet summary, transactio history etc
+- Transact with wallet on blockchain and add unique functionality
 
 
