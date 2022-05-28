@@ -10,6 +10,9 @@ Coin Description
 */
 contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
 
+    mapping(address => Transaction[]) public transactionHistory; // Record of transactions made by accounts
+    mapping(address => bool) public discountReward;
+
     /*
         Initialise coin as Fitcoin (FIT) with an initial supply of 0 (by not declaring it)
         and 0 decimals so we can just look at whole numbers
@@ -37,7 +40,23 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
 
     }
 
+    function makeTransaction(bool applyReward) public{
+        if (applyReward){
+            require(discountReward, "This account is not eligible for a discount yet");
+            discountReward = false;
+        }
+        Transaction purchase = new Transaction();
+        transactionHistory.push(purchase);
+            
+        if(transactionHistory.length % 4 == 0){
+            discountReward = true;
+        }
+    }
+
 }
 
+//Empty placeholder object for transactions. We can add more stuff to this
 
-
+contract Transaction{
+    
+}
