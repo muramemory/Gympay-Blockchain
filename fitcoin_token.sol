@@ -29,6 +29,8 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     */
     function deposit (address account, uint256 amount) public{
 
+	mint(account, amount);
+
     }
 
         /*
@@ -37,6 +39,8 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
         @TODO: Call inherited burn function
     */
     function withdraw (address account, uint256 amount) public{
+
+	_burn(account, amount);
 
     }
 
