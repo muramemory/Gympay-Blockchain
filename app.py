@@ -22,16 +22,16 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 def load_contract():
 
     # Load Fitcoin ABI
-    with open(Path('fitcoin_abi.json')) as f:
-        certificate_abi = json.load(f)
-
+    with open(Path('abi/fitcoin_abi.json')) as f:
+        fitcoin_abi = json.load(f)
+        
     # Set the contract address (this is the address of the deployed contract)
     contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
 
     # Get the contract
     contract = w3.eth.contract(
         address=contract_address,
-        abi=certificate_abi
+        abi=fitcoin_abi
     )
     # Return the contract from the function
     return contract
@@ -48,19 +48,17 @@ contract = load_contract()
 accounts = w3.eth.accounts
 account = accounts[0]
 user_wallet = st.selectbox("Select Account", options=accounts)
+user_balance = contract.functions.balanceOf(user_wallet).call()
+st.markdown(user_balance)
 
 ################################################################################
 # Withdraw and Deposit
 ################################################################################
 
-if st.button("Purchase Fitcoin"):
-    with st.sidebar:
-        amount = st.text_input("Amount to purchase")
-        if st.button("Purchase"):
-            contract.functions.deposit(user_wallet, amount).transact({'from': account, 'gas': 1000000})
+amount = st.text_input("Amount to purchase")
+if st.button("Purchase"):
+    contract.functions.deposit(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
 
-if st.button("Sell Fitcoin"):
-    with st.sidebar:
-        amount = st.text_input("Amount to sell")
-        if st.button("Sell"):
-            contract.functions.wihdraw(user_wallet, amount).transact({'from': account, 'gas': 1000000})
+amount = st.text_input("Amount to sell")
+if st.button("Sell"):
+    contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
