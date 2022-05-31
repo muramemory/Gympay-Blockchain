@@ -42,9 +42,25 @@ contract = load_contract()
 
 
 ################################################################################
-# Select account
+# Select wallet
 ################################################################################
 
 accounts = w3.eth.accounts
 account = accounts[0]
-#wallet = st.selectbox("Select Account", options=accounts)
+user_wallet = st.selectbox("Select Account", options=accounts)
+
+################################################################################
+# Withdraw and Deposit
+################################################################################
+
+if st.button("Purchase Fitcoin"):
+    with st.sidebar:
+        amount = st.text_input("Amount to purchase")
+        if st.button("Purchase"):
+            contract.functions.deposit(user_wallet, amount).transact({'from': account, 'gas': 1000000})
+
+if st.button("Sell Fitcoin"):
+    with st.sidebar:
+        amount = st.text_input("Amount to sell")
+        if st.button("Sell"):
+            contract.functions.wihdraw(user_wallet, amount).transact({'from': account, 'gas': 1000000})
