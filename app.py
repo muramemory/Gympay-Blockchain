@@ -4,6 +4,7 @@ from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
 import streamlit as st
+from PIL import Image
 
 load_dotenv()
 
@@ -40,6 +41,17 @@ def load_contract():
 # Load the contract
 contract = load_contract()
 
+# Top of Page Image
+
+
+image = Image.open('Images/Gympay.png')
+st.image(image)
+
+st.text('Gympay is a service that enables you to pay for your gym membership with')
+st.text('cryptocurrency. Blockchain technology enables cheaper and faster transactions') 
+st.text('which gives gym owners opportunities to offer great services at great prices.')
+st.text('Purchase Fitcoin below and use your digital wallet to scan into partnered gym')
+st.text('facilities for instant access and opportunties to earn rewards.')
 
 ################################################################################
 # Select wallet
