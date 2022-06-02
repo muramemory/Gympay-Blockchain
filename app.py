@@ -59,6 +59,35 @@ contract = load_contract()
 # Sidebar Menu
 
 
+def home_page():
+    image = Image.open('Images/Gympay.png')
+    st.image(image)
+    st.markdown("""  """)
+    st.markdown("""
+    Gympay  is a service that enables you to pay for your gym membership with cryptocurrency. Blockchain technology enables cheaper and faster 
+    transactions which gives gym owners opportunities to offer great services at great prices.
+    Purchase Fitcoin below and use your digital wallet to scan into partnered gym
+    facilities for instant access and opportunties to earn rewards.
+    """)
+
+    accounts = w3.eth.accounts
+    account = accounts[0]
+    user_wallet = st.selectbox("Select Account", options=accounts)
+    user_balance = contract.functions.balanceOf(user_wallet).call()
+    st.markdown(user_balance)
+    
+# ################################################################################
+# # Withdraw and Deposit
+# ################################################################################
+
+    amount = st.text_input("Amount to purchase")
+    if st.button("Purchase"):
+        contract.functions.deposit(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+
+    amount = st.text_input("Amount to sell")
+    if st.button("Sell"):
+        contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu", # required
@@ -69,41 +98,23 @@ with st.sidebar:
     )
 
 if selected == "Home":
-    # st.title(f"You have selected {selected}")
+    home_page()
+elif selected == "Projects":
+    st.title(f"Welcome to the GymPay {selected} information page")
+elif selected == "Contact":
     image = Image.open('Images/Gympay.png')
     st.image(image)
+    st.title(f"{selected} the GymPay team")
+    st.markdown("""If you have any questions regarding the GymPay project or any $FIT coin queries please submit it using the form below.""")
+    st.markdown("""We will aim to get back to you within 48 hours.""")
+    st.markdown("""Thank you for your support!""")
+    st.markdown("""GymPay Team""")
     st.markdown("""  """)
-
-    st.markdown("""
-    Gympay  is a service that enables you to pay for your gym membership with cryptocurrency. Blockchain technology enables cheaper and faster 
-    transactions which gives gym owners opportunities to offer great services at great prices.
-    Purchase Fitcoin below and use your digital wallet to scan into partnered gym
-    facilities for instant access and opportunties to earn rewards.
-
-    """)
-
-    accounts = w3.eth.accounts
-    account = accounts[0]
-    user_wallet = st.selectbox("Select Account", options=accounts)
-    user_balance = contract.functions.balanceOf(user_wallet).call()
-    st.markdown(user_balance)
-
-    ################################################################################
-    # Withdraw and Deposit
-    ################################################################################
-
-    amount = st.text_input("Amount to purchase")
-    if st.button("Purchase"):
-        contract.functions.deposit(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
-
-    amount = st.text_input("Amount to sell")
-    if st.button("Sell"):
-        contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
-
-if selected == "Projects":
-    st.title(f"You have selected {selected}")
-if selected == "Contact":
-    st.title(f"You have selected {selected}")
+    with st.form(key='GymPay Form:'):
+        text_input = st.text_input(label='Enter your question / query below:')
+        submit_button = st.form_submit_button(label='Submit')
+        if submit_button:
+            st.write(f"Form is now submitted!")
 
 
 # Define and connect a new Web3 provider
