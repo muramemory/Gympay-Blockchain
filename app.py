@@ -5,8 +5,18 @@ from pathlib import Path
 from dotenv import load_dotenv
 import streamlit as st
 from PIL import Image
+import pandas as pd
 
 load_dotenv()
+
+
+### Create Top Bar ###
+
+st.markdown(
+    "##### Made in [![image_add](https://media-thumbs.golden.com/Ce1V_LeVgumkUOeYYkixMAoRQNU=/200x200/smart/golden-storage-production.s3.amazonaws.com%2Ftopic_images%2Fe509a9c1bb3541c38c30b22a2173d456.png)](https://streamlit.io/) by [Gympay Team](https://github.com/muramemory/Gympay-Blockchain)"
+)
+
+
 
 # Define and connect a new Web3 provider
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
