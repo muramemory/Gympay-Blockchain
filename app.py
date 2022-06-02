@@ -95,7 +95,6 @@ with st.sidebar:
 
 if selected == "Home":
     home_page()
-    selected = projects
 elif selected == "Projects":
     st.title(f"You have selected {selected}")
 elif selected == "Contact":
