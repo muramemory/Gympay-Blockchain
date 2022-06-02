@@ -57,7 +57,7 @@ contract = load_contract()
 image = Image.open('Images/Gympay.png')
 st.image(image)
 
-st.text('Gympay is a service that enables you to pay for your gym membership with')
+st.markdown('Gympay is a service that enables you to pay for your gym membership with cryptocurrency. Blockchain technology enables cheaper and faster transactions')
 st.text('cryptocurrency. Blockchain technology enables cheaper and faster transactions') 
 st.text('which gives gym owners opportunities to offer great services at great prices.')
 st.text('Purchase Fitcoin below and use your digital wallet to scan into partnered gym')
