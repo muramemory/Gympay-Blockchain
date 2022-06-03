@@ -58,9 +58,11 @@ def load_contract():
 # Load the contract
 contract = load_contract()
 
-# Sidebar Menu
+# Load the accounts since they may be used anywhere in the program
+accounts = w3.eth.accounts
+account = accounts[0]
 
-
+# Home page streamlit page
 def home_page():
     image = Image.open('Images/Gympay.png')
     st.image(image)
@@ -72,8 +74,6 @@ def home_page():
     facilities for instant access and opportunties to earn rewards.
     """)
 
-    accounts = w3.eth.accounts
-    account = accounts[0]
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
     st.markdown(user_balance)
@@ -90,23 +90,21 @@ def home_page():
     if st.button("Sell"):
         contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
 
+def transaction_page():
+    buyer = st.selectbox("Select Account", options=accounts)
+    seller = st.text_input("Vendor's address")
+    price = st.text_input("price")
+    if st.button("dewit"):
+        # Cast price to float here so we arent casting blank text
+        price = float(price)
+        transactions_list = contract.functions.getTransactionHistory(buyer).call()
+        # Check if this is the 4th transaction in the list
+        if len(transactions_list) % 4 == 0:
+            price = price * 0.75
+        price = price * (10*18)
+        contract.functions.makeTransaction(buyer, seller, int(price))
 
-
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Main Menu", # required
-        options=["Home", "Projects", "Contact", "Make a Purchase"], #required
-        icons=["house","book","envelope"],
-        menu_icon="cast",
-        default_index=0,
-    )
-
-if selected == "Home":
-    home_page()
-elif selected == "Projects":
-    st.title(f"Welcome to the GymPay {selected} information page")
-    readme()
-elif selected == "Contact":
+def contact_page():
     image = Image.open('Images/Gympay.png')
     st.image(image)
     st.title(f"{selected} the GymPay team")
@@ -120,6 +118,25 @@ elif selected == "Contact":
         submit_button = st.form_submit_button(label='Submit')
         if submit_button:
             st.write(f"Form is now submitted!")
+
+
+# Sidebar menu
+with st.sidebar:
+    selected = option_menu(
+        menu_title="Main Menu", # required
+        options=["Home", "Projects", "Contact", "Make a Purchase"], #required
+        icons=["house","book","envelope"],
+        menu_icon="cast",
+        default_index=0,
+    )
+
+# Based on the value of selected, each pages respective function is called
+if selected == "Home":
+    home_page()
+elif selected == "Projects":
+    st.title(f"Welcome to the GymPay {selected} information page")
+    readme()
+elif selected == "Contact":
+    contact_page()
 elif selected == "Make a Purchase":
-    seller = st.text_input("Vendor's address")
-    price = st.text_input("price")
+    transaction_page()

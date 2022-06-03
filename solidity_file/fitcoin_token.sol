@@ -1,5 +1,6 @@
 pragma solidity ^0.5.0;
 
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
@@ -9,9 +10,11 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5
 Coin Description
 */
 contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
+    using SafeMath for uint;
 
     mapping(address => Transaction[]) public transactionHistory; // Record of transactions made by accounts
-    mapping(address => bool) public discountReward; // Record of reward status of accounts
+    mapping(address => Discount) public discounts; // Record of reward status of accounts
+    uint discountID;
 
     /*
         Initialise coin as Fitcoin (FIT) with an initial supply of 0 (by not declaring it)
@@ -19,21 +22,25 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     */
 
     constructor () ERC20Detailed("Fitcoin", "Fit", 0) public{
-        
+        discountID = 0;
+    }
+
+
+    function getTransactionHistory(address account) public view returns(Transaction[] memory){
+        return transactionHistory[account];
     }
 
     //Purchase Function calls mint on account
-
     function deposit (address account, uint256 amount) public{
 
-	mint(account, amount);
+	    mint(account, amount);
 
     }
 
     // Purchase Function calls burn on account
     function withdraw (address account, uint256 amount) public{
 
-	_burn(account, amount);
+	    _burn(account, amount);
 
     }
 
@@ -41,22 +48,14 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
         makeTransaction simulates making a transaction with a vendor
         The buyer and seller addresses are provided by the caller, as well as whether to apply a discount reward
         Each call will create a new transaction object
-        The function will also award a discount if it is the 4th purchase since the previous discount
     */
-    function makeTransaction(address buyer, address seller, bool applyReward) public{
-        // Check if discount is requested. Program will check if a discount is eligible
-        if (applyReward){
-            require(discountReward[buyer], "This account is not eligible for a discount yet");
-            discountReward[buyer] = false;
-        }
-        // Create new transaction object
-        Transaction purchase = new Transaction(buyer, seller);
+    function makeTransaction(address buyer, address seller, uint price) public{
+
+        Transaction purchase = new Transaction(buyer, seller, price);
         transactionHistory[buyer].push(purchase);
         
-        // Check if eligible for reward and apply
-        if(transactionHistory[buyer].length % 4 == 0){
-            discountReward[buyer] = true;
-        }
+        transferFrom(buyer, seller, price);
+
     }
 
 }
@@ -68,9 +67,20 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
 contract Transaction{
     address buyAddress;
     address sellAddress;
+    uint date;
+    uint amount;
 
-    constructor(address buyer, address seller) public{
+    constructor(address buyer, address seller, uint price) public{
         buyAddress = buyer;
         sellAddress = seller;
+        date = now;
+        amount = price;
     }
+}
+
+// Currently unused, only required if discounts need to be saved
+contract Discount{
+    //We can't really do % discounts as solidity does not do floats
+    uint amount;
+    uint ID;
 }
