@@ -119,18 +119,8 @@ def contact_page():
         if submit_button:
             st.write(f"Form is now submitted!")
 
-
-# Sidebar menu
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Main Menu", # required
-        options=["Home", "Research", "Wallet", "Contact"], #required
-        icons=["house","book","envelope"],
-        menu_icon="cast",
-        default_index=0,
-    )
-
 def readme():
+
     image = Image.open('Images/Gympay.png')
     st.image(image)
     st.markdown(
@@ -290,12 +280,37 @@ def readme():
 
     Blockchain.com """)
 
+def wallet_page():
+    accounts = w3.eth.accounts
+    account = accounts[0]
+    user_wallet = st.selectbox("Select Account", options=accounts)
+    user_balance = contract.functions.balanceOf(user_wallet).call()
+    st.markdown(user_balance)
+
+# Sidebar menu
+with st.sidebar:
+    selected = option_menu(
+        menu_title="Main Menu", # required
+        options=["Home", "Research", "Wallet", "Transaction","Contact"], #required
+        icons=["house","book","wallet","cash","envelope"],
+        menu_icon="cast",
+        default_index=0,
+    )
+
+
+
 # Based on the value of selected, each pages respective function is called
 if selected == "Home":
     home_page()
 elif selected == "Research":
     st.title(f"Welcome to the GymPay {selected} information page")
     readme()
+elif selected == "Wallet":
+    st.title(f"Welcome to the Wallet Page where you can select your wallet and check your summary")
+    wallet_page()
+elif selected == "Transaction":
+    st.title(f"Welcome to the transcation page")
+    transaction_page()
 elif selected == "Contact":
     contact_page()
 elif selected == "Make a Purchase":
