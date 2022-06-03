@@ -1,5 +1,6 @@
 import os
 import json
+import requests
 from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
@@ -285,7 +286,34 @@ def wallet_page():
     account = accounts[0]
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
+    st.markdown(f"Wallet Total:")
+    st.markdown(f"Fitcoin")
     st.markdown(user_balance)
+
+    if user_wallet == accounts[0]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
+    elif user_wallet == accounts[1]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x4d17Ea08098B6c6D426aC5B94c50a38468744F87')
+    elif user_wallet == accounts[2]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x3B70F855c46D7a2A0E3B83e387C2972C92429AB0')
+    elif user_wallet == accounts[3]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x94401551CF29542e102dFd8274887191A3F26aDf')
+    elif user_wallet == accounts[4]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x94401551CF29542e102dFd8274887191A3F26aDf')
+    elif user_wallet == accounts[5]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x0192680e972eaAa0Bd7248e3E21bB3fBffF27ab6')
+    elif user_wallet == accounts[6]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x77CF951Bb6197e1A012fC6FD4862af04BE556221')
+    elif user_wallet == accounts[7]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x16368557Cb16d1c18ce6e7042f310859e146BaAC')
+    elif user_wallet == accounts[8]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x259AAe894BaCF518C4833d92c338f76A619F919d')
+    elif user_wallet == accounts[9]:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x259AAe894BaCF518C4833d92c338f76A619F919d')
+
+    # st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
+
+
 
 # Sidebar menu
 with st.sidebar:
