@@ -10,10 +10,24 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5
 Coin Description
 */
 contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
+
+    /*
+    Transaction object to store any info we need.
+    For now we have buy/sell addresses but more can be added
+    Transaction dates are set to the time of creation
+    */
+
+    struct Transaction{
+        address buyAddress;
+        address sellAddress;
+        uint date;
+        uint amount;
+    }
+
     using SafeMath for uint;
 
     mapping(address => Transaction[]) public transactionHistory; // Record of transactions made by accounts
-    mapping(address => Discount) public discounts; // Record of reward status of accounts
+    //mapping(address => Discount) public discounts; // Record of reward status of accounts
     uint discountID;
 
     /*
@@ -26,8 +40,8 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     }
 
 
-    function getTransactionHistory(address account) public view returns(Transaction[] memory){
-        return transactionHistory[account];
+    function getNumTransactions(address account) public view returns(uint){
+        return transactionHistory[account].length;
     }
 
     //Purchase Function calls mint on account
@@ -51,7 +65,7 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     */
     function makeTransaction(address buyer, address seller, uint price) public{
 
-        Transaction purchase = new Transaction(buyer, seller, price);
+        Transaction memory purchase = Transaction(buyer, seller, now, price);
         transactionHistory[buyer].push(purchase);
         
         transferFrom(buyer, seller, price);
@@ -65,6 +79,7 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     For now we have buy/sell addresses but more can be added
     Transaction dates are set to the time of creation
 */
+/*
 contract Transaction{
     address buyAddress;
     address sellAddress;
@@ -78,10 +93,12 @@ contract Transaction{
         amount = price;
     }
 }
-
+*/
 // Currently unused, only required if discounts need to be saved
+/*
 contract Discount{
     //We can't really do % discounts as solidity does not do floats
     uint amount;
     uint ID;
 }
+*/

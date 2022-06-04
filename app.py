@@ -103,11 +103,11 @@ def transaction_page():
         price = float(price)
 
         # Grab the list of transactions (This will be a list of addresses)
-        transactions_list = contract.functions.getTransactionHistory(buyer).call()
+        transactions_num = contract.functions.getNumTransactions(buyer).call()
 
         # Check if this is the 4th transaction in the list
         # A discount of 25% is applied on every 4th transaction
-        if len(transactions_list) % 4 == 0 & len(transactions_list) != 0:
+        if transactions_num % 4 == 0 & transactions_num != 0:
             price = price * 0.75
         price = w3.toWei(price, "ether")
         contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
