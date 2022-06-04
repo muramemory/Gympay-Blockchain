@@ -8,6 +8,7 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 from streamlit_option_menu import option_menu
+import qrcode
 
 from readme_page import readme
 
@@ -290,26 +291,27 @@ def wallet_page():
     st.markdown(f"Fitcoin")
     st.markdown(user_balance)
 
+
     if user_wallet == accounts[0]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[0]))
     elif user_wallet == accounts[1]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x4d17Ea08098B6c6D426aC5B94c50a38468744F87')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[1]))
     elif user_wallet == accounts[2]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x3B70F855c46D7a2A0E3B83e387C2972C92429AB0')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[2]))
     elif user_wallet == accounts[3]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x94401551CF29542e102dFd8274887191A3F26aDf')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[3]))
     elif user_wallet == accounts[4]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x94401551CF29542e102dFd8274887191A3F26aDf')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data'+(accounts[4]))
     elif user_wallet == accounts[5]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x0192680e972eaAa0Bd7248e3E21bB3fBffF27ab6')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[5]))
     elif user_wallet == accounts[6]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x77CF951Bb6197e1A012fC6FD4862af04BE556221')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[6]))
     elif user_wallet == accounts[7]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x16368557Cb16d1c18ce6e7042f310859e146BaAC')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[7]))
     elif user_wallet == accounts[8]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x259AAe894BaCF518C4833d92c338f76A619F919d')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[8]))
     elif user_wallet == accounts[9]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x259AAe894BaCF518C4833d92c338f76A619F919d')
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[9]))
 
     # st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
 
