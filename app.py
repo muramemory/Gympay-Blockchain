@@ -8,7 +8,6 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 from streamlit_option_menu import option_menu
-import qrcode
 
 from readme_page import readme
 
@@ -78,33 +77,42 @@ def home_page():
 
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
+    user_balance = w3.fromWei(int(user_balance), "ether")
     st.markdown(user_balance)
     
 # ################################################################################
 # # Withdraw and Deposit
 # ################################################################################
 
-    amount = st.text_input("Amount to purchase")
+    purchase_amount = st.text_input("Amount to purchase")
+    
     if st.button("Purchase"):
-        contract.functions.deposit(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+        purchase_amount = w3.toWei(int(purchase_amount), "ether")
+        contract.functions.deposit(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
 
-    amount = st.text_input("Amount to sell")
+    sell_amount = st.text_input("Amount to sell")
     if st.button("Sell"):
-        contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+        sell_amount = w3.toWei(int(sell_amount), "ether")
+        contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
 
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
     seller = st.text_input("Vendor's address")
-    price = st.text_input("price")
-    if st.button("dewit"):
+    price = st.text_input("Price")
+    if st.button("Make Transaction"):
         # Cast price to float here so we arent casting blank text
         price = float(price)
+
+        # Grab the list of transactions (This will be a list of addresses)
         transactions_list = contract.functions.getTransactionHistory(buyer).call()
+
         # Check if this is the 4th transaction in the list
-        if len(transactions_list) % 4 == 0:
+        # A discount of 25% is applied on every 4th transaction
+        if len(transactions_list) % 4 == 0 & len(transactions_list) != 0:
             price = price * 0.75
-        price = price * (10*18)
-        contract.functions.makeTransaction(buyer, seller, int(price))
+        price = w3.toWei(price, "ether")
+        contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
+        contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
 
 def contact_page():
     image = Image.open('Images/Gympay.png')
@@ -128,6 +136,7 @@ def wallet_page():
     user_wallet = st.selectbox("Select Account", options=accounts)
     selected = user_wallet
     user_balance = contract.functions.balanceOf(user_wallet).call()
+    user_balance = w3.fromWei(int(user_balance), "ether")
     st.markdown(f"Wallet Total:")
     st.markdown(f"Fitcoin")
     st.markdown(user_balance)

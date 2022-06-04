@@ -21,7 +21,7 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
         and 0 decimals so we can just look at whole numbers
     */
 
-    constructor () ERC20Detailed("Fitcoin", "Fit", 0) public{
+    constructor () ERC20Detailed("Fitcoin", "Fit", 18) public{
         discountID = 0;
     }
 
@@ -63,6 +63,7 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
 /*
     Transaction object to store any info we need.
     For now we have buy/sell addresses but more can be added
+    Transaction dates are set to the time of creation
 */
 contract Transaction{
     address buyAddress;
