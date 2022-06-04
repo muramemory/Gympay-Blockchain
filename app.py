@@ -84,13 +84,12 @@ def home_page():
 # # Withdraw and Deposit
 # ################################################################################
 
-    purchase_amount = st.text_input("Amount to purchase")
-    
+    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
     if st.button("Purchase"):
         purchase_amount = w3.toWei(int(purchase_amount), "ether")
         contract.functions.deposit(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
 
-    sell_amount = st.text_input("Amount to sell")
+    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
     if st.button("Sell"):
         sell_amount = w3.toWei(int(sell_amount), "ether")
         contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
