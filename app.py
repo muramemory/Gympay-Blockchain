@@ -101,14 +101,19 @@ def transaction_page():
     if st.button("Make Transaction"):
         # Cast price to float here so we arent casting blank text
         price = float(price)
-
-        # Grab the list of transactions (This will be a list of addresses)
-        transactions_num = contract.functions.getNumTransactions(buyer).call()
-
-        # Check if this is the 4th transaction in the list
-        # A discount of 25% is applied on every 4th transaction
-        if transactions_num % 4 == 0 & transactions_num != 0:
-            price = price * 0.75
+        
+        # Grab the list of transactions
+        transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
+        transactions = transactions_filter.get_all_entries()
+        if transactions:
+            # Check if this is the 4th transaction in the list
+            # A discount of 25% is applied on every 4th transaction
+            if transactions_num % 4 == 0 & transactions_num != 0:
+                price = price * 0.75
+            
+    
+       
+        
         price = w3.toWei(price, "ether")
         contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
         contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
@@ -144,6 +149,10 @@ def wallet_page():
         st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
     # st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
+    for transaction in transactions:
+        transaction_dictionary = dict(transaction)
+        if transaction_dictionary["args"]["buyer"] == buyer:
+            st.markdown(transaction_dictionary)
 
 
 
