@@ -126,32 +126,14 @@ def wallet_page():
     accounts = w3.eth.accounts
     account = accounts[0]
     user_wallet = st.selectbox("Select Account", options=accounts)
+    selected = user_wallet
     user_balance = contract.functions.balanceOf(user_wallet).call()
     st.markdown(f"Wallet Total:")
     st.markdown(f"Fitcoin")
     st.markdown(user_balance)
 
-
-    if user_wallet == accounts[0]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[0]))
-    elif user_wallet == accounts[1]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[1]))
-    elif user_wallet == accounts[2]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[2]))
-    elif user_wallet == accounts[3]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[3]))
-    elif user_wallet == accounts[4]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data'+(accounts[4]))
-    elif user_wallet == accounts[5]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[5]))
-    elif user_wallet == accounts[6]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[6]))
-    elif user_wallet == accounts[7]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[7]))
-    elif user_wallet == accounts[8]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[8]))
-    elif user_wallet == accounts[9]:
-        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(accounts[9]))
+    if user_wallet == selected:
+        st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
     # st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
 
