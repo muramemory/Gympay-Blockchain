@@ -16,9 +16,7 @@ load_dotenv()
 
 # Setting for fullpage
 
-st.set_page_config(page_icon=("Images/gympay_test_logo_2.png"))
-
-### Sidebar 
+st.set_page_config(page_icon=("Images/gympay_test_logo_2.png")) 
 
 ### Create Top Bar ###
 
@@ -76,6 +74,11 @@ def home_page():
     facilities for instant access and opportunties to earn rewards.
     """)
 
+    # st.markdown("""## Fitcoin """)
+    st.markdown('**Fitcoin** is the token used to pay for your gym membership fees.') 
+    st.markdown('The more frequently you go to the gym, the more rewards you can earn')
+    st.markdown("""### Connect your wallet and buy Fitcoin below """)
+
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
     st.markdown(user_balance)
@@ -90,11 +93,13 @@ def home_page():
 
     amount = st.text_input("Amount to sell")
     if st.button("Sell"):
+        require(msg.value >= 10, "Not enough ETH sent; check price!");
         contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
 
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
     seller = st.text_input("Vendor's address")
+    selected = buyer
     price = st.text_input("price")
     if st.button("dewit"):
         # Cast price to float here so we arent casting blank text
@@ -105,6 +110,24 @@ def transaction_page():
             price = price * 0.75
         price = price * (10*18)
         contract.functions.makeTransaction(buyer, seller, int(price))
+
+    # Review the information from the latest block to confirm your transaction's inclusion
+    latest = w3.eth.get_block('latest')
+    w3.eth.get_block
+
+    # Review the latest block
+    latest
+
+    # w3.eth.getTransactionReceipt()
+    w3.eth.get_transaction(0x22386dabce28c3ca1e664bbcf2297f8e552be80bc779915c3d59e6e3ba184c6c)
+
+    if buyer == selected:
+        st.markdown(w3.eth.get_transaction(0x22386dabce28c3ca1e664bbcf2297f8e552be80bc779915c3d59e6e3ba184c6c))
+
+    st.markdown(f"  ")
+    st.markdown(f"  ")
+    st.markdown(f"  ")
+    st.markdown(f"# Transaction History")
 
 def contact_page():
     image = Image.open('Images/Gympay.png')
@@ -135,15 +158,12 @@ def wallet_page():
     if user_wallet == selected:
         st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
-    # st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x63d492cA657813bfC86c18c8ceA485CF632EF002')
-
-
 
 # Sidebar menu
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu", # required
-        options=["Home", "Research", "Wallet", "Transaction","Contact"], #required
+        options=["Home", "Wallet", "Transaction","Research","Contact"], #required
         icons=["house","book","wallet","cash","envelope"],
         menu_icon="cast",
         default_index=0,
@@ -154,15 +174,15 @@ with st.sidebar:
 # Based on the value of selected, each pages respective function is called
 if selected == "Home":
     home_page()
-elif selected == "Research":
-    st.title(f"Welcome to the GymPay {selected} information page")
-    readme()
 elif selected == "Wallet":
     st.title(f"Welcome to the Wallet Page where you can select your wallet and check your summary")
     wallet_page()
 elif selected == "Transaction":
     st.title(f"Welcome to the transcation page")
     transaction_page()
+elif selected == "Research":
+    st.title(f"Welcome to the GymPay {selected} information page")
+    readme()
 elif selected == "Contact":
     contact_page()
 elif selected == "Make a Purchase":
