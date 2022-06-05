@@ -1,7 +1,5 @@
 # Gympay-Blockchain
 
-# ![image_add](Images/Gympay.png)
-
 ## Overview
 
 We are creating a ERC20 token to be used for transcations between Gym owners and Gym users.

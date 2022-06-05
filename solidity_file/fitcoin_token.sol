@@ -1,19 +1,15 @@
 pragma solidity ^0.5.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
 
 
 /*
-Coin Description
+
 */
 contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
-    using SafeMath for uint;
 
-    mapping(address => Transaction[]) public transactionHistory; // Record of transactions made by accounts
-    mapping(address => Discount) public discounts; // Record of reward status of accounts
     uint discountID;
 
     /*
@@ -21,14 +17,12 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
         and 0 decimals so we can just look at whole numbers
     */
 
-    constructor () ERC20Detailed("Fitcoin", "Fit", 0) public{
+    constructor () ERC20Detailed("Fitcoin", "Fit", 18) public{
         discountID = 0;
     }
 
-
-    function getTransactionHistory(address account) public view returns(Transaction[] memory){
-        return transactionHistory[account];
-    }
+    // This even will keep track of every transaction made with the coin
+    event Transaction (address buyer, address seller, uint date, uint amount);
 
     //Purchase Function calls mint on account
     function deposit (address account, uint256 amount) public{
@@ -51,36 +45,13 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     */
     function makeTransaction(address buyer, address seller, uint price) public{
 
-        Transaction purchase = new Transaction(buyer, seller, price);
-        transactionHistory[buyer].push(purchase);
+        //Transaction memory purchase = Transaction(buyer, seller, now, price);
+        //transactionHistory[buyer].push(purchase);
+
+        emit Transaction(buyer, seller, now, price);
         
         transferFrom(buyer, seller, price);
 
     }
 
-}
-
-/*
-    Transaction object to store any info we need.
-    For now we have buy/sell addresses but more can be added
-*/
-contract Transaction{
-    address buyAddress;
-    address sellAddress;
-    uint date;
-    uint amount;
-
-    constructor(address buyer, address seller, uint price) public{
-        buyAddress = buyer;
-        sellAddress = seller;
-        date = now;
-        amount = price;
-    }
-}
-
-// Currently unused, only required if discounts need to be saved
-contract Discount{
-    //We can't really do % discounts as solidity does not do floats
-    uint amount;
-    uint ID;
 }

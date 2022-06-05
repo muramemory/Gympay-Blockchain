@@ -38,25 +38,6 @@
 	},
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "discounts",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
 		"name": "totalSupply",
 		"outputs": [
@@ -321,25 +302,6 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "getTransactionHistory",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
 				"name": "owner",
 				"type": "address"
 			},
@@ -353,29 +315,6 @@
 			{
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			},
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "transactionHistory",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
 			}
 		],
 		"payable": false,
@@ -405,6 +344,33 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "buyer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "seller",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "date",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Transaction",
+		"type": "event"
 	},
 	{
 		"anonymous": false,

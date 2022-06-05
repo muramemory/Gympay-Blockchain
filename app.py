@@ -8,7 +8,8 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 from streamlit_option_menu import option_menu
-import qrcode
+import pandas as pd
+from datetime import datetime
 
 from readme_page import readme
 
@@ -16,7 +17,9 @@ load_dotenv()
 
 # Setting for fullpage
 
-st.set_page_config(page_icon=("Images/gympay_test_logo_2.png")) 
+st.set_page_config(page_icon=("Images/gympay_test_logo_2.png"))
+
+### Sidebar 
 
 ### Create Top Bar ###
 
@@ -73,61 +76,52 @@ def home_page():
     Purchase Fitcoin below and use your digital wallet to scan into partnered gym
     facilities for instant access and opportunties to earn rewards.
     """)
-
     # st.markdown("""## Fitcoin """)
     st.markdown('**Fitcoin** is the token used to pay for your gym membership fees.') 
     st.markdown('The more frequently you go to the gym, the more rewards you can earn')
     st.markdown("""### Connect your wallet and buy Fitcoin below """)
-
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
+    user_balance = w3.fromWei(int(user_balance), "ether")
     st.markdown(user_balance)
     
 # ################################################################################
 # # Withdraw and Deposit
 # ################################################################################
 
-    amount = st.text_input("Amount to purchase")
+    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
     if st.button("Purchase"):
-        contract.functions.deposit(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+        purchase_amount = w3.toWei(int(purchase_amount), "ether")
+        contract.functions.deposit(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
 
-    amount = st.text_input("Amount to sell")
+    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
     if st.button("Sell"):
-        require(msg.value >= 10, "Not enough ETH sent; check price!");
-        contract.functions.withdraw(user_wallet, int(amount)).transact({'from': account, 'gas': 1000000})
+        sell_amount = w3.toWei(int(sell_amount), "ether")
+        contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
 
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
     seller = st.text_input("Vendor's address")
-    selected = buyer
-    price = st.text_input("price")
-    if st.button("dewit"):
+    price = st.text_input("Price")
+    if st.button("Make Transaction"):
         # Cast price to float here so we arent casting blank text
         price = float(price)
-        transactions_list = contract.functions.getTransactionHistory(buyer).call()
-        # Check if this is the 4th transaction in the list
-        if len(transactions_list) % 4 == 0:
-            price = price * 0.75
-        price = price * (10*18)
-        contract.functions.makeTransaction(buyer, seller, int(price))
-
-    # Review the information from the latest block to confirm your transaction's inclusion
-    latest = w3.eth.get_block('latest')
-    w3.eth.get_block
-
-    # Review the latest block
-    latest
-
-    # w3.eth.getTransactionReceipt()
-    w3.eth.get_transaction(0x22386dabce28c3ca1e664bbcf2297f8e552be80bc779915c3d59e6e3ba184c6c)
-
-    if buyer == selected:
-        st.markdown(w3.eth.get_transaction(0x22386dabce28c3ca1e664bbcf2297f8e552be80bc779915c3d59e6e3ba184c6c))
-
-    st.markdown(f"  ")
-    st.markdown(f"  ")
-    st.markdown(f"  ")
-    st.markdown(f"# Transaction History")
+        
+        # Grab the list of transactions
+        transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
+        transactions = transactions_filter.get_all_entries()
+        
+        if transactions:
+            print(len(transactions) % 4)
+            # Check if this is the 4th transaction in the list
+            # A discount of 25% is applied on every 4th transaction
+            if len(transactions) % 4 == 0:
+                print(len(transactions) % 4)
+                price = price * 0.75
+        
+        price = w3.toWei(price, "ether")
+        contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
+        contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
 
 def contact_page():
     image = Image.open('Images/Gympay.png')
@@ -151,6 +145,7 @@ def wallet_page():
     user_wallet = st.selectbox("Select Account", options=accounts)
     selected = user_wallet
     user_balance = contract.functions.balanceOf(user_wallet).call()
+    user_balance = w3.fromWei(int(user_balance), "ether")
     st.markdown(f"Wallet Total:")
     st.markdown(f"Fitcoin")
     st.markdown(user_balance)
@@ -159,11 +154,32 @@ def wallet_page():
         st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
 
+    # Display transaction history
+    transactions_df = pd.DataFrame(columns=["From","To", "Time", "Price"])
+
+    transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
+    transactions = transactions_filter.get_all_entries()
+    for transaction in transactions:
+        transaction_dictionary = dict(transaction)
+        buyer = transaction_dictionary["args"]["buyer"]
+        seller = transaction_dictionary["args"]["seller"]
+        time = transaction_dictionary["args"]["date"]
+        time = datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+        price = transaction_dictionary["args"]["amount"]
+        price = w3.fromWei(price, "ether")
+        transactions_df = transactions_df.append({"From": buyer, "To": seller, "Time": time, "Price": price}, ignore_index=True)
+    
+    transactions_df = transactions_df.set_index("Time")
+    
+    st.dataframe(transactions_df)
+
+
+
 # Sidebar menu
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu", # required
-        options=["Home", "Wallet", "Transaction","Research","Contact"], #required
+        options=["Home",  "Wallet", "Transaction","Research","Contact"], #required
         icons=["house","book","wallet","cash","envelope"],
         menu_icon="cast",
         default_index=0,
@@ -175,12 +191,19 @@ with st.sidebar:
 if selected == "Home":
     home_page()
 elif selected == "Wallet":
-    st.title(f"Welcome to the Wallet Page where you can select your wallet and check your summary")
+    image = Image.open('Images/Gympay.png')
+    st.image(image)
+    st.markdown(f"Welcome to the Wallet Page where you can select your wallet and check your summary")
     wallet_page()
 elif selected == "Transaction":
-    st.title(f"Welcome to the transcation page")
+    image = Image.open('Images/Gympay.png')
+    st.image(image)
+    st.title(f"Welcome to the Transaction page")
+    st.markdown(f"Transfer your funds to another wallet address here.")
     transaction_page()
 elif selected == "Research":
+    image = Image.open('Images/Gympay.png')
+    st.image(image)
     st.title(f"Welcome to the GymPay {selected} information page")
     readme()
 elif selected == "Contact":
