@@ -83,6 +83,8 @@ def home_page():
     user_wallet = st.selectbox("Select Account", options=accounts)
     user_balance = contract.functions.balanceOf(user_wallet).call()
     user_balance = w3.fromWei(int(user_balance), "ether")
+    st.markdown(f"Wallet Total:")
+    st.markdown(f"Fitcoin")
     st.markdown(user_balance)
     
 # ################################################################################
