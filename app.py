@@ -195,7 +195,8 @@ if selected == "Home":
 elif selected == "Wallet":
     image = Image.open('Images/Gympay.png')
     st.image(image)
-    st.markdown(f"Welcome to the Wallet Page where you can select your wallet and check your summary")
+    st.title(f"Welcome to the Wallet Page")
+    st.markdown("In this page you can select your wallet, check your summary and also your transaction history.")
     wallet_page()
 elif selected == "Transaction":
     image = Image.open('Images/Gympay.png')
@@ -206,7 +207,7 @@ elif selected == "Transaction":
 elif selected == "Research":
     image = Image.open('Images/Gympay.png')
     st.image(image)
-    st.title(f"Welcome to the GymPay {selected} information page")
+    st.title(f"Welcome to the GymPay {selected} Information page")
     readme()
 elif selected == "Contact":
     contact_page()

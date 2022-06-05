@@ -2,8 +2,6 @@ import streamlit as st
 from PIL import Image
 
 def readme():
-    image = Image.open('Images/Gympay.png')
-    st.image(image)
     st.markdown(
         
         """ 
