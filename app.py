@@ -79,13 +79,7 @@ def home_page():
     # st.markdown("""## Fitcoin """)
     st.markdown('**Fitcoin** is the token used to pay for your gym membership fees.') 
     st.markdown('The more frequently you go to the gym, the more rewards you can earn')
-    st.markdown("""### Connect your wallet and buy Fitcoin below """)
-    user_wallet = st.selectbox("Select Account", options=accounts)
-    user_balance = contract.functions.balanceOf(user_wallet).call()
-    user_balance = w3.fromWei(int(user_balance), "ether")
-    st.markdown(f"Wallet Total:")
-    st.markdown(f"Fitcoin")
-    st.markdown(user_balance)
+    
     
 # ################################################################################
 # # Withdraw and Deposit
@@ -94,24 +88,30 @@ def home_page():
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
     seller = st.text_input("Vendor's address")
-    price = st.text_input("Price")
+    price = st.number_input("Amount to transfer", min_value=0, value=0, step=1, help="Please enter an amount to transfer")
     if st.button("Make Transaction"):
-        # Cast price to float here so we arent casting blank text
-        price = float(price)
-        
-        # Grab the list of transactions
-        transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
-        transactions = transactions_filter.get_all_entries()
-        
-        if transactions:
-            # Check if this is the 4th transaction in the list
-            # A discount of 25% is applied on every 4th transaction
-            if len(transactions) % 4 == 0:
-                price = price * 0.75
-        
-        price = w3.toWei(price, "ether")
-        contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
-        contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
+
+        # Check if seller is a valid address
+        if seller in accounts:
+
+            # Cast price to float here so we arent casting blank text
+            price = float(price)
+            
+            # Grab the list of transactions
+            transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
+            transactions = transactions_filter.get_all_entries()
+            
+            if transactions:
+                # Check if this is the 4th transaction in the list
+                # A discount of 25% is applied on every 4th transaction
+                if len(transactions) % 4 == 0:
+                    price = price * 0.75
+            
+            price = w3.toWei(price, "ether")
+            contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
+            contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
+        else:
+            st.markdown("The seller is not a valid address")
 
 def contact_page():
     image = Image.open('Images/Gympay.png')
@@ -141,35 +141,23 @@ local_css("Images/style.css")
 
 
 def wallet_page():
+    st.markdown("""### Connect your wallet and buy Fitcoin below """)
     accounts = w3.eth.accounts
     account = accounts[0]
     user_wallet = st.selectbox("Select Account", options=accounts)
     selected = user_wallet
     user_balance = contract.functions.balanceOf(user_wallet).call()
     user_balance = w3.fromWei(int(user_balance), "ether")
-    st.markdown(f"Wallet Total:")
-    st.markdown(f"Fitcoin")
-    st.markdown(user_balance)
+    st.markdown(f"Wallet Balance: FIT {user_balance}")
 
     if user_wallet == selected:
         st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
-    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
-    if st.button("Purchase"):
-        if (account == user_wallet):
-            purchase_amount = w3.toWei(int(purchase_amount), "ether")
-            contract.functions.mint(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
-        else:
-            purchase_amount = w3.toWei(int(purchase_amount), "ether")
-            contract.functions.purchase(account, user_wallet, int(purchase_amount)).transact({'from': user_wallet, 'gas': 1000000})
-
-    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
-    if st.button("Sell"):
-        sell_amount = w3.toWei(int(sell_amount), "ether")
-        contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
-
-        
-
+    # The UI and functionality will change depending on which account is using the program
+    if account == user_wallet:
+        root_wallet_page()
+    else:
+        user_wallet_page(user_wallet)
 
     # Display transaction history
     transactions_df = pd.DataFrame(columns=["From","To", "Time", "Price"])
@@ -178,18 +166,62 @@ def wallet_page():
     transactions = transactions_filter.get_all_entries()
     for transaction in transactions:
         transaction_dictionary = dict(transaction)
+
+        # Get buyer and seller
         buyer = transaction_dictionary["args"]["buyer"]
         seller = transaction_dictionary["args"]["seller"]
+
+        # Grab time and translate from UTC format
         time = transaction_dictionary["args"]["date"]
         time = datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+
+        # Get price of transaction
         price = transaction_dictionary["args"]["amount"]
         price = w3.fromWei(price, "ether")
+
+        # Append if the information is relevant to the chosen wallet
         if (buyer == user_wallet or seller == user_wallet):
             transactions_df = transactions_df.append({"From": buyer, "To": seller, "Time": time, "Price": price}, ignore_index=True)
     
     transactions_df = transactions_df.set_index("Time")
     
     st.dataframe(transactions_df)
+
+# This page displays if the selected account on the wallet page is the root wallet
+def root_wallet_page():
+    purchase_amount = st.number_input("Amount to mint", min_value=0, value=0, step=1, help="Please enter an amount to mint")
+    if st.button("Mint"):
+        purchase_amount = w3.toWei(int(purchase_amount), "ether")
+        contract.functions.mint(account, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
+    sell_amount = st.number_input("Amount to burn", min_value=0, value=0, step=1, help="Please enter an amount to sell")
+    if st.button("burn"):
+        sell_amount = w3.toWei(int(sell_amount), "ether")
+        contract.functions.burn(account, int(sell_amount)).transact({'from': account, 'gas': 1000000})
+
+# This page displays if the selected account on the wallet page is not the root wallet
+def user_wallet_page(user_wallet):
+    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
+    if st.button("Purchase"):
+        purchase_amount = w3.toWei(int(purchase_amount), "ether")
+
+        root_balance = contract.functions.balanceOf(account).call()
+        
+        # If the root account doesn't have enough money to purchase from it will mint the difference
+        if root_balance < purchase_ammount:
+            difference = purchase_amount - root_balance
+            contract.functions.mint(account, int(difference)).transact({'from': account, 'gas': 1000000})
+
+        contract.functions.approve(user_wallet, purchase_amount).transact({'from': account, 'gas': 1000000})
+        contract.functions.purchase(account, user_wallet, int(purchase_amount)).transact({'from': user_wallet, 'gas': 1000000})
+    
+    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
+    if st.button("Sell"):
+        sell_amount = w3.toWei(int(sell_amount), "ether")
+
+        contract.functions.approve(account, sell_amount).transact({'from': account, 'gas': 1000000})
+        contract.functions.sell(account, user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
+
+    
 
 
 

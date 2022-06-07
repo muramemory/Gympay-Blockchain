@@ -10,7 +10,6 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5
 */
 contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
 
-    uint discountID;
 
     /*
         Initialise coin as Fitcoin (FIT) with an initial supply of 0 (by not declaring it)
@@ -18,24 +17,28 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     */
 
     constructor () ERC20Detailed("Fitcoin", "Fit", 18) public{
-        discountID = 0;
     }
 
     // This even will keep track of every transaction made with the coin
     event Transaction (address buyer, address seller, uint date, uint amount);
 
-    //Purchase Function calls mint on account
-    function purchase (address root_account, address buyer, uint256 amount) public{
+    //Purchase Function is used by normal users and transfers from the root account
+    //Root account will mint coins if it is out of balance
+    function purchase(address root_account, address buyer, uint256 amount) public{
 
 	    transferFrom(buyer, root_account, amount);
 
     }
 
-    // Purchase Function calls burn on account
-    function sell (address account, uint256 amount) public{
+    // Sell Function is used by normal users and transfers to the root account
+    function sell(address root_account, address buyer, uint256 amount) public{
 
-	    _burn(account, amount);
+	    transferFrom(root_account, buyer, amount);
+ 
+    }
 
+    function burn(address root_account, uint256 amount) public{
+        _burn(root_account, amount);
     }
 
     /*
