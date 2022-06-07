@@ -108,7 +108,7 @@ def transaction_page():
                     price = price * 0.75
             
             price = w3.toWei(price, "ether")
-            contract.functions.approve(buyer, price).transact({'from': account, 'gas': 1000000})
+            contract.functions.approve(buyer, price).transact({'from': buyer, 'gas': 1000000})
             contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
         else:
             st.markdown("The seller is not a valid address")
@@ -207,19 +207,22 @@ def user_wallet_page(user_wallet):
         root_balance = contract.functions.balanceOf(account).call()
         
         # If the root account doesn't have enough money to purchase from it will mint the difference
-        if root_balance < purchase_ammount:
+        print(root_balance)
+        print(purchase_amount)
+        if root_balance < purchase_amount:
             difference = purchase_amount - root_balance
+            
             contract.functions.mint(account, int(difference)).transact({'from': account, 'gas': 1000000})
 
-        contract.functions.approve(user_wallet, purchase_amount).transact({'from': account, 'gas': 1000000})
-        contract.functions.purchase(account, user_wallet, int(purchase_amount)).transact({'from': user_wallet, 'gas': 1000000})
+        contract.functions.approve(account, purchase_amount).transact({'from': account, 'gas': 1000000})
+        contract.functions.purchase(account, user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
     
     sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
     if st.button("Sell"):
         sell_amount = w3.toWei(int(sell_amount), "ether")
 
-        contract.functions.approve(account, sell_amount).transact({'from': account, 'gas': 1000000})
-        contract.functions.sell(account, user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
+        contract.functions.approve(user_wallet, sell_amount).transact({'from': user_wallet, 'gas': 1000000})
+        contract.functions.sell(account, user_wallet, int(sell_amount)).transact({'from': user_wallet, 'gas': 1000000})
 
     
 

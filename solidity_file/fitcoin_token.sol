@@ -26,14 +26,14 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     //Root account will mint coins if it is out of balance
     function purchase(address root_account, address buyer, uint256 amount) public{
 
-	    transferFrom(buyer, root_account, amount);
+	    transferFrom(root_account, buyer, amount);
 
     }
 
     // Sell Function is used by normal users and transfers to the root account
     function sell(address root_account, address buyer, uint256 amount) public{
 
-	    transferFrom(root_account, buyer, amount);
+	    transferFrom(buyer, root_account, amount);
  
     }
 
