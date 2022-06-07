@@ -1,31 +1,49 @@
 # Gympay-Blockchain
 
-# ![image_add](Images/Gympay.png)
+# ![image_add](Images/Fit_Coin.PNG)
 
 ## Overview
 
-We are creating a ERC20 token to be used for transcations between Gym owners and Gym users.
+An ERC20 Token built for fast and cheap transactions for Gym memberships, maximising profit and customer satisfation called $FIT coin.
 
-We decided on this idea as we believe there is a market for reduced financial cost and more choice for gym users and higher profitability for Gym owners.
+Built using Solidity for contract logic and Streamlit for the frontend to buy $FIT.
 
-## To Do
-IDEAS
-
-
-1. Gympay - Blockchain and Token
-- Intial Supply 1,000,000
-- Price per coin is $1 Aus
-- Using this blockchain to pay for gym memberships and gym products (whey protein, supplements, etc)
-- The more frequency of transactions, the higher your rewards. Proof of usage. (Discounts on products and membership)
-- If statements to create reward system for usage
-- Streamlit application for front end users
-- Link to buying real world products
+## Use and Installation
+Using the chrome browser for best viewing, view the dashboard using the link below:
 
 
-To do:
+## Research of GymPay
 
-- Create ERC20 Token Using Solidity Smart Contract
-- Create Streamlit application frontend showing wallet summary, transactio history etc
-- Transact with wallet on blockchain and add unique functionality
+You can use the links below to look at the data anaylsis and cost savings researched for GymPay project.
+
+1. [GymPay_Market_Research](https://github.com/Dottie-Doutre/GymPay/blob/main/GYMPAY_MARKET_RESEARCH_2022.docx.pdf)  
+2. [GymPay_Presentation](https://github.com/Dottie-Doutre/GymPay/blob/main/Gympay_presentation.pdf)
+
+## Built With
+- Solidity
+- Streamlit
+- OpenZepplin
+- Pandas
+- Ganache
+
+## Examples of $FIT Coin Home Page
+
+
+
+## Versioning
+One branch used for version control. 
+
+The team pushed changes 
+
+## Authors
+
+Anthony Mura
+
+Kevin Chen 
+
+Craig Braganza 
+
+Dorothy Doutre 
+
 
 
