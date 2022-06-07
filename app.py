@@ -87,31 +87,45 @@ def home_page():
 
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
+
+    user_balance = contract.functions.balanceOf(buyer).call()
+    user_balance = w3.fromWei(int(user_balance), "ether")
+    st.markdown(f"Wallet Balance: FIT {user_balance}")
+
     seller = st.text_input("Vendor's address")
     price = st.number_input("Amount to transfer", min_value=0, value=0, step=1, help="Please enter an amount to transfer")
+    
+    # Grab the list of transactions
+    transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
+    transactions = transactions_filter.get_all_entries()
+    # Set discount flag
+    discount_flag = False
+    if transactions:
+        # Check if this is the 4th transaction in the list
+        # A discount of 25% is applied on every 4th transaction
+        if len(transactions) % 4 == 0:
+            discount_flag = True
+            st.markdown("Your next purchase will have a 25% discount")
+        else:
+            st.markdown(f"You have {4 - (len(transactions) % 4)} transactions until your next discount")
+    else:
+        st.markdown(f"You have {4 - (len(transactions) % 4)} transactions until your next discount")
     if st.button("Make Transaction"):
 
         # Check if seller is a valid address
         if seller in accounts:
+            st.markdown("The seller is not a valid address")
 
             # Cast price to float here so we arent casting blank text
             price = float(price)
-            
-            # Grab the list of transactions
-            transactions_filter = contract.events.Transaction.createFilter(fromBlock=0)
-            transactions = transactions_filter.get_all_entries()
-            
-            if transactions:
-                # Check if this is the 4th transaction in the list
-                # A discount of 25% is applied on every 4th transaction
-                if len(transactions) % 4 == 0:
-                    price = price * 0.75
+
+            if discount_flag:
+                price = price * 0.75
             
             price = w3.toWei(price, "ether")
             contract.functions.approve(buyer, price).transact({'from': buyer, 'gas': 1000000})
             contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
-        else:
-            st.markdown("The seller is not a valid address")
+            
 
 def contact_page():
     image = Image.open('Images/Gympay.png')
@@ -253,7 +267,8 @@ elif selected == "Transaction":
     image = Image.open('Images/Gympay.png')
     st.image(image)
     st.title(f"Welcome to the Transaction page")
-    st.markdown(f"Transfer your funds to another wallet address here.")
+    st.markdown("""Transfer your funds to another wallet address here.
+    \n\nWhen making transactions, a 25% discount is automatically applied when you make your 4th transaction""")
     transaction_page()
 elif selected == "Research":
     image = Image.open('Images/Gympay.png')
