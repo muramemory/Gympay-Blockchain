@@ -25,14 +25,14 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
     event Transaction (address buyer, address seller, uint date, uint amount);
 
     //Purchase Function calls mint on account
-    function deposit (address account, uint256 amount) public{
+    function purchase (address root_account, address buyer, uint256 amount) public{
 
-	    mint(account, amount);
+	    transferFrom(buyer, root_account, amount);
 
     }
 
     // Purchase Function calls burn on account
-    function withdraw (address account, uint256 amount) public{
+    function sell (address account, uint256 amount) public{
 
 	    _burn(account, amount);
 
@@ -44,9 +44,6 @@ contract Fitcoin_Token is ERC20, ERC20Detailed, ERC20Mintable{
         Each call will create a new transaction object
     */
     function makeTransaction(address buyer, address seller, uint price) public{
-
-        //Transaction memory purchase = Transaction(buyer, seller, now, price);
-        //transactionHistory[buyer].push(purchase);
 
         emit Transaction(buyer, seller, now, price);
         

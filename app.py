@@ -91,16 +91,6 @@ def home_page():
 # # Withdraw and Deposit
 # ################################################################################
 
-    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
-    if st.button("Purchase"):
-        purchase_amount = w3.toWei(int(purchase_amount), "ether")
-        contract.functions.deposit(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
-
-    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
-    if st.button("Sell"):
-        sell_amount = w3.toWei(int(sell_amount), "ether")
-        contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
-
 def transaction_page():
     buyer = st.selectbox("Select Account", options=accounts)
     seller = st.text_input("Vendor's address")
@@ -114,11 +104,9 @@ def transaction_page():
         transactions = transactions_filter.get_all_entries()
         
         if transactions:
-            print(len(transactions) % 4)
             # Check if this is the 4th transaction in the list
             # A discount of 25% is applied on every 4th transaction
             if len(transactions) % 4 == 0:
-                print(len(transactions) % 4)
                 price = price * 0.75
         
         price = w3.toWei(price, "ether")
@@ -155,6 +143,22 @@ def wallet_page():
     if user_wallet == selected:
         st.image('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+(user_wallet))
 
+    purchase_amount = st.number_input("Amount to purchase", min_value=0, value=0, step=1, help="Please enter an amount to purchase")
+    if st.button("Purchase"):
+        if (account == user_wallet):
+            purchase_amount = w3.toWei(int(purchase_amount), "ether")
+            contract.functions.mint(user_wallet, int(purchase_amount)).transact({'from': account, 'gas': 1000000})
+        else:
+            purchase_amount = w3.toWei(int(purchase_amount), "ether")
+            contract.functions.purchase(account, user_wallet, int(purchase_amount)).transact({'from': user_wallet, 'gas': 1000000})
+
+    sell_amount = st.number_input("Amount to sell", min_value=0, value=0, step=1, help="Please enter an amount to sell")
+    if st.button("Sell"):
+        sell_amount = w3.toWei(int(sell_amount), "ether")
+        contract.functions.withdraw(user_wallet, int(sell_amount)).transact({'from': account, 'gas': 1000000})
+
+        
+
 
     # Display transaction history
     transactions_df = pd.DataFrame(columns=["From","To", "Time", "Price"])
@@ -169,7 +173,8 @@ def wallet_page():
         time = datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
         price = transaction_dictionary["args"]["amount"]
         price = w3.fromWei(price, "ether")
-        transactions_df = transactions_df.append({"From": buyer, "To": seller, "Time": time, "Price": price}, ignore_index=True)
+        if (buyer == user_wallet or seller == user_wallet):
+            transactions_df = transactions_df.append({"From": buyer, "To": seller, "Time": time, "Price": price}, ignore_index=True)
     
     transactions_df = transactions_df.set_index("Time")
     
