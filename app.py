@@ -24,7 +24,7 @@ st.set_page_config(page_icon=("Images/gympay_test_logo_2.png"))
 ### Create Top Bar ###
 
 st.markdown(
-    "##### Made in [![image_add](https://media-thumbs.golden.com/Ce1V_LeVgumkUOeYYkixMAoRQNU=/200x200/smart/golden-storage-production.s3.amazonaws.com%2Ftopic_images%2Fe509a9c1bb3541c38c30b22a2173d456.png)](https://streamlit.io/) by [Gympay Team](https://github.com/muramemory/Gympay-Blockchain)"
+    "##### A project by the [Gympay Team](https://github.com/muramemory/Gympay-Blockchain) visit our github :computer:"
 )
 
 
@@ -116,17 +116,28 @@ def transaction_page():
 def contact_page():
     image = Image.open('Images/Gympay.png')
     st.image(image)
-    st.title(f"{selected} the GymPay team")
-    st.markdown("""If you have any questions regarding the GymPay project or any $FIT coin queries please submit it using the form below.""")
+    st.title(f":e-mail:{selected} the GymPay team!")
+    st.markdown("""If you have any questions regarding the GymPay project or any $FIT coin enqueries please submit it using the form below.""")
     st.markdown("""We will aim to get back to you within 48 hours.""")
-    st.markdown("""Thank you for your support!""")
-    st.markdown("""GymPay Team""")
-    st.markdown("""  """)
-    with st.form(key='GymPay Form:'):
-        text_input = st.text_input(label='Enter your question / query below:')
-        submit_button = st.form_submit_button(label='Submit')
-        if submit_button:
-            st.write(f"Form is now submitted!")
+    st.markdown("""Thank you for your support! :muscle:""")
+    contact_form = """
+        <form action="https://formsubmit.co/ddoutre90@gmail.com" method="POST">
+            <input type="hidden" name="_captcha" value="false"><br>
+            <input type="text" name="name" placeholder="Enter your name" required><br>
+            <input type="email" name="email" placeholder="Enter Your email" required><br>
+            <textarea name="message" placeholder="Type your message here"></textarea><br>
+            <button type="submit">Send</button>
+        </form>
+        """
+    st.markdown(contact_form, unsafe_allow_html=True)
+
+# Use Local CSS File
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("Images/style.css")
+
 
 
 def wallet_page():
