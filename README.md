@@ -44,27 +44,27 @@ You can find the presentation within the Documents folder above.
 
 Login Page
 
-![image_add](images/sl_1.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_1.PNG?raw=true)
 
 Home Page
 
-![image_add](images/sl_2.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_2.PNG?raw=true)
 
 Wallet Page
 
-![image_add](images/sl_3.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_3.PNG?raw=true)
 
 Transaction Page
 
-![image_add](images/sl_4.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_4.PNG?raw=true)
 
 Research Page
 
-![image_add](images/sl_5.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_5.PNG?raw=true)
 
 Contact Page
 
-![image_add](images/sl_6.PNG)
+![image_add](https://github.com/muramemory/Gympay-Blockchain/blob/main/Images/sl_6.PNG?raw=true)
 
 ## Versioning
 One branch (main) was used for version control. 
