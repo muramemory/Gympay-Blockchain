@@ -114,8 +114,14 @@ if authentication_status:
         user_balance = contract.functions.balanceOf(buyer).call()
         user_balance = w3.fromWei(int(user_balance), "ether")
         st.markdown(f"Wallet Balance: FIT {user_balance}")
-
+        
         seller = st.text_input("Vendor's address")
+
+        # Check if seller is a valid address
+        # For now this wont host the execution of the program, solidity will prevent any bad executions
+        if not(seller in accounts):
+                st.markdown("The seller is not a valid address")
+        
         price = st.number_input("Amount to transfer", min_value=0, value=0, step=1, help="Please enter an amount to transfer")
         
         # Grab the list of transactions
@@ -134,21 +140,16 @@ if authentication_status:
         else:
             st.markdown(f"You have {4 - (len(transactions) % 4)} transactions until your next discount")
         if st.button("Make Transaction"):
+            # Cast price to float here so we arent casting blank text
+            price = float(price)
 
-            # Check if seller is a valid address
-            if seller in accounts:
-                st.markdown("The seller is not a valid address")
-
-                # Cast price to float here so we arent casting blank text
-                price = float(price)
-
-                if discount_flag:
-                    price = price * 0.75
-                
-                price = w3.toWei(price, "ether")
-                contract.functions.approve(buyer, price).transact({'from': buyer, 'gas': 1000000})
-                contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
-                
+            if discount_flag:
+                price = price * 0.75
+            
+            price = w3.toWei(price, "ether")
+            contract.functions.approve(buyer, price).transact({'from': buyer, 'gas': 1000000})
+            contract.functions.makeTransaction(buyer, seller, price).transact({'from': buyer, 'gas': 1000000})
+            
 
     def contact_page():
         image = Image.open('Images/Gympay.png')
